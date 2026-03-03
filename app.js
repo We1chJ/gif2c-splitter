@@ -399,7 +399,6 @@ function buildCombinedHeader(frameList, width, height, doProgmem) {
     `// Drop this single file into your project and #include "gif_frames.h"`,
     ``,
     `#pragma once`,
-    `#include <avr/pgmspace.h>`,
     ``,
     `#define FRAME_COUNT  ${frameList.length}`,
     `#define FRAME_WIDTH  ${width}`,
