@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GIF → C Array Splitter</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎞️ GIF → C Array Splitter</h1>
+      <p class="subtitle">Convert a GIF into per-frame <code>.h</code> files (RGB565, byte-swapped) ready for Adafruit displays.</p>
+    </header>
+
+    <!-- ── Settings ── -->
+    <section class="card" id="settings-card">
+      <h2>Settings</h2>
+      <div class="grid-2">
+        <label>
+          Output width (px)
+          <input type="number" id="out-width" value="240" min="1" max="2048" />
+        </label>
+        <label>
+          Output height (px)
+          <input type="number" id="out-height" value="240" min="1" max="2048" />
+        </label>
+      </div>
+      <label class="checkbox-label">
+        <input type="checkbox" id="byte-swap" checked />
+        Byte-swap RGB565 values (for Adafruit / big-endian SPI displays)
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="progmem" checked />
+        Add <code>PROGMEM</code> attribute (Arduino / AVR)
+      </label>
+    </section>
+
+    <!-- ── Drop zone ── -->
+    <section class="card" id="drop-card">
+      <div class="drop-zone" id="drop-zone">
+        <div class="drop-icon">📂</div>
+        <p>Drop a GIF here, or <label class="link" for="file-input">browse</label></p>
+        <input type="file" id="file-input" accept=".gif,image/gif" />
+        <p class="hint">Processed entirely in your browser — nothing is uploaded.</p>
+      </div>
+    </section>
+
+    <!-- ── Progress / status ── -->
+    <section class="card hidden" id="status-card">
+      <div class="status-row">
+        <span id="status-text">Loading…</span>
+        <span id="status-badge" class="badge badge-info">working</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+      </div>
+      <div class="meta-row" id="meta-row"></div>
+    </section>
+
+    <!-- ── Preview grid ── -->
+    <section class="card hidden" id="preview-card">
+      <div class="preview-header">
+        <h2>Frame Preview</h2>
+        <div class="preview-controls">
+          <button id="play-btn" class="btn btn-sm" title="Play / Pause preview">▶ Play</button>
+          <span id="frame-counter" class="dim">–</span>
+        </div>
+      </div>
+      <canvas id="preview-canvas"></canvas>
+    </section>
+
+    <!-- ── Download ── -->
+    <section class="card hidden" id="download-card">
+      <h2>Download</h2>
+      <p id="download-info"></p>
+      <div class="btn-row">
+        <button id="dl-zip-btn" class="btn btn-primary">⬇ Download all frames as ZIP</button>
+        <button id="dl-index-btn" class="btn btn-secondary">⬇ Download <code>frames_index.h</code></button>
+      </div>
+      <details>
+        <summary>Single-frame download</summary>
+        <div class="single-frame-row">
+          <label>
+            Frame #
+            <input type="number" id="single-frame-num" value="0" min="0" />
+          </label>
+          <button id="dl-single-btn" class="btn btn-sm">⬇ Download frame</button>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Reset ── -->
+    <div class="btn-row reset-row hidden" id="reset-row">
+      <button id="reset-btn" class="btn btn-ghost">↺ Start over</button>
+    </div>
+  </div>
+
+  <!-- JSZip for in-browser ZIP creation -->
+  <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <script src="app.js"></script>
+</body>
+</html>

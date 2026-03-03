@@ -1,0 +1,317 @@
+/* =============================================================================
+   GIF → C Array Splitter  |  style.css
+   ============================================================================= */
+
+/* ── Reset & base ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0f1117;
+  --surface:   #1a1d27;
+  --surface2:  #22263a;
+  --border:    #2e3249;
+  --accent:    #7c6ff7;
+  --accent-h:  #9b96ff;
+  --green:     #3ecf8e;
+  --red:       #f25f5c;
+  --yellow:    #f4c430;
+  --text:      #e2e4f0;
+  --dim:       #7a7f9a;
+  --radius:    12px;
+  --radius-sm: 6px;
+  --shadow:    0 4px 24px rgba(0,0,0,.45);
+  --font: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+html { font-size: 16px; }
+
+body {
+  background: var(--bg);
+  color:      var(--text);
+  font-family: var(--font);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding: 2rem 1rem 4rem;
+}
+
+/* ── Layout ────────────────────────────────────────────────────────────────── */
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+header { text-align: center; padding: 1rem 0 .5rem; }
+header h1 { font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 700; letter-spacing: -.02em; }
+.subtitle {
+  margin-top: .4rem;
+  color: var(--dim);
+  font-size: .9rem;
+}
+.subtitle code {
+  background: var(--surface2);
+  padding: .1em .35em;
+  border-radius: 4px;
+  font-size: .85em;
+}
+
+/* ── Card ──────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.card h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+/* ── Settings ──────────────────────────────────────────────────────────────── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .75rem 1rem;
+  margin-bottom: .75rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  font-size: .875rem;
+  color: var(--dim);
+}
+
+input[type="number"] {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: .45rem .7rem;
+  font-size: 1rem;
+  width: 100%;
+  outline: none;
+  transition: border-color .15s;
+}
+input[type="number"]:focus { border-color: var(--accent); }
+
+.checkbox-label {
+  flex-direction: row;
+  align-items: center;
+  gap: .5rem;
+  color: var(--text);
+  font-size: .9rem;
+  margin-top: .5rem;
+  cursor: pointer;
+  user-select: none;
+}
+.checkbox-label input[type="checkbox"] {
+  width: 16px; height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.checkbox-label code {
+  background: var(--surface2);
+  padding: .1em .3em;
+  border-radius: 4px;
+  font-size: .82em;
+}
+
+/* ── Drop Zone ─────────────────────────────────────────────────────────────── */
+.drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  position: relative;
+}
+.drop-zone:hover, .drop-zone.drag-over {
+  border-color: var(--accent);
+  background: rgba(124,111,247,.06);
+}
+.drop-icon { font-size: 2.5rem; margin-bottom: .5rem; }
+.drop-zone p { color: var(--dim); font-size: .95rem; }
+.drop-zone .link {
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+  flex-direction: unset;
+}
+.drop-zone input[type="file"] {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  opacity: 0; cursor: pointer;
+}
+.hint { font-size: .78rem !important; margin-top: .6rem; color: var(--dim) !important; }
+
+/* ── Status ────────────────────────────────────────────────────────────────── */
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .75rem;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+#status-text { font-size: .95rem; }
+
+.badge {
+  display: inline-block;
+  padding: .2em .65em;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  flex-shrink: 0;
+}
+.badge-info    { background: rgba(124,111,247,.18); color: var(--accent-h); }
+.badge-success { background: rgba(62,207,142,.15);  color: var(--green); }
+.badge-error   { background: rgba(242,95,92,.15);   color: var(--red); }
+
+.progress-bar-wrap {
+  background: var(--surface2);
+  border-radius: 999px;
+  height: 6px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-h));
+  border-radius: 999px;
+  transition: width .18s ease;
+}
+
+.meta-row {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-top: .75rem;
+  font-size: .82rem;
+  color: var(--dim);
+}
+.meta-row b { color: var(--text); }
+
+/* ── Preview ───────────────────────────────────────────────────────────────── */
+.preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+.preview-controls {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.dim { color: var(--dim); font-size: .85rem; }
+
+#preview-canvas {
+  display: block;
+  max-width: 100%;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  image-rendering: pixelated;
+  background: #000;
+  margin: 0 auto;
+}
+
+/* ── Download ──────────────────────────────────────────────────────────────── */
+#download-info {
+  font-size: .9rem;
+  color: var(--dim);
+  margin-bottom: 1rem;
+}
+#download-info b  { color: var(--text); }
+#download-info code {
+  background: var(--surface2);
+  padding: .1em .3em;
+  border-radius: 4px;
+  font-size: .85em;
+}
+
+details { margin-top: 1rem; }
+summary {
+  cursor: pointer;
+  font-size: .85rem;
+  color: var(--dim);
+  user-select: none;
+  padding: .3rem 0;
+}
+summary:hover { color: var(--text); }
+
+.single-frame-row {
+  display: flex;
+  align-items: flex-end;
+  gap: .75rem;
+  margin-top: .75rem;
+  flex-wrap: wrap;
+}
+.single-frame-row label {
+  flex: 0 0 120px;
+}
+.single-frame-row input { width: 120px; }
+
+/* ── Buttons ───────────────────────────────────────────────────────────────── */
+.btn-row {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+.reset-row { justify-content: center; padding-top: .25rem; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .55rem 1.1rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s, background .15s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+.btn-primary   { background: var(--accent);  color: #fff; }
+.btn-primary:hover:not(:disabled)   { background: var(--accent-h); }
+
+.btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover:not(:disabled) { background: #2d3152; }
+
+.btn-sm {
+  padding: .35rem .8rem;
+  font-size: .82rem;
+}
+
+.btn-ghost { background: transparent; color: var(--dim); border: 1px solid var(--border); }
+.btn-ghost:hover { color: var(--text); border-color: var(--dim); }
+
+/* ── Utility ───────────────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 500px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .btn-row { flex-direction: column; }
+  .btn { width: 100%; justify-content: center; }
+  .drop-zone { padding: 2rem 1rem; }
+}
