@@ -266,6 +266,31 @@ summary:hover { color: var(--text); }
 }
 .single-frame-row input { width: 120px; }
 
+/* ── Frame range selector ──────────────────────────────────────────────────── */
+.range-row {
+  display: flex;
+  align-items: flex-end;
+  gap: .75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.range-row label {
+  flex: 0 0 110px;
+}
+.range-row input { width: 110px; }
+.range-sep {
+  font-size: 1.2rem;
+  color: var(--dim);
+  padding-bottom: .4rem;
+  flex-shrink: 0;
+}
+.range-count {
+  font-size: .82rem;
+  color: var(--accent-h);
+  padding-bottom: .5rem;
+  flex-shrink: 0;
+}
+
 /* ── Buttons ───────────────────────────────────────────────────────────────── */
 .btn-row {
   display: flex;

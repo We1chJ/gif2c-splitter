@@ -74,20 +74,21 @@
     <section class="card hidden" id="download-card">
       <h2>Download</h2>
       <p id="download-info"></p>
-      <div class="btn-row">
-        <button id="dl-zip-btn" class="btn btn-primary">⬇ Download <code>gif_frames.zip</code></button>
-        <button id="dl-index-btn" class="btn btn-secondary">⬇ Download <code>gif_frames.h</code></button>
+      <div class="range-row">
+        <label>
+          From frame
+          <input type="number" id="range-start" value="0" min="0" />
+        </label>
+        <span class="range-sep">→</span>
+        <label>
+          To frame
+          <input type="number" id="range-end" value="0" min="0" />
+        </label>
+        <span id="range-count" class="range-count"></span>
       </div>
-      <details>
-        <summary>Single-frame download</summary>
-        <div class="single-frame-row">
-          <label>
-            Frame #
-            <input type="number" id="single-frame-num" value="0" min="0" />
-          </label>
-          <button id="dl-single-btn" class="btn btn-sm">⬇ Download frame</button>
-        </div>
-      </details>
+      <div class="btn-row">
+        <button id="dl-btn" class="btn btn-primary">⬇ Download <code>gif_frames.h</code></button>
+      </div>
     </section>
 
     <!-- ── Reset ── -->
@@ -95,9 +96,6 @@
       <button id="reset-btn" class="btn btn-ghost">↺ Start over</button>
     </div>
   </div>
-
-  <!-- JSZip for in-browser ZIP creation -->
-  <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 
   <script src="app.js"></script>
 </body>

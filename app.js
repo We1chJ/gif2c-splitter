@@ -29,10 +29,10 @@ const frameCounter   = document.getElementById("frame-counter");
 
 const downloadCard   = document.getElementById("download-card");
 const downloadInfo   = document.getElementById("download-info");
-const dlZipBtn       = document.getElementById("dl-zip-btn");
-const dlIndexBtn     = document.getElementById("dl-index-btn");
-const singleFrameNum = document.getElementById("single-frame-num");
-const dlSingleBtn    = document.getElementById("dl-single-btn");
+const rangeStart     = document.getElementById("range-start");
+const rangeEnd       = document.getElementById("range-end");
+const rangeCount     = document.getElementById("range-count");
+const dlBtn          = document.getElementById("dl-btn");
 
 const resetRow       = document.getElementById("reset-row");
 const resetBtn       = document.getElementById("reset-btn");
@@ -125,12 +125,12 @@ async function handleFile(file) {
 
     setupPreview(imageDataList, delayList, gifWidth, gifHeight);
 
-    singleFrameNum.max   = total - 1;
-    singleFrameNum.value = 0;
+    rangeStart.min = 0; rangeStart.max = total - 1; rangeStart.value = 0;
+    rangeEnd.min   = 0; rangeEnd.max   = total - 1; rangeEnd.value   = total - 1;
+    updateRangeCount();
     downloadInfo.innerHTML =
-      `<b>${total} frames</b> packed into a single <code>gif_frames.h</code> \u2014 ` +
-      `${outW}\u00d7${outH} RGB565, ${(outW*outH).toLocaleString()} pixels/frame. ` +
-      `Just <code>#include "gif_frames.h"</code> in your sketch.`;
+      `<b>${total} frames</b> decoded — ${outW}\u00d7${outH} RGB565. ` +
+      `Select a range below, then download as a single <code>gif_frames.h</code>.`;
 
     show(previewCard); show(downloadCard); show(resetRow);
 
@@ -459,44 +459,46 @@ function stopPreview() {
 //  DOWNLOADS
 // =============================================================================
 
-dlZipBtn.addEventListener("click", async () => {
+function updateRangeCount() {
+  const s = parseInt(rangeStart.value);
+  const e = parseInt(rangeEnd.value);
+  if (!isNaN(s) && !isNaN(e) && e >= s) {
+    rangeCount.textContent = `(${e - s + 1} frame${e - s + 1 === 1 ? "" : "s"})`;
+  } else {
+    rangeCount.textContent = "";
+  }
+}
+
+rangeStart.addEventListener("input", updateRangeCount);
+rangeEnd.addEventListener("input",   updateRangeCount);
+
+dlBtn.addEventListener("click", () => {
   if (!frames.length) return;
-  dlZipBtn.disabled    = true;
-  dlZipBtn.textContent = "\u23f3 Building\u2026";
+
+  let s = parseInt(rangeStart.value);
+  let e = parseInt(rangeEnd.value);
+  if (isNaN(s)) s = 0;
+  if (isNaN(e)) e = frames.length - 1;
+  s = Math.max(0, Math.min(s, frames.length - 1));
+  e = Math.max(s, Math.min(e, frames.length - 1));
 
   const outW = parseInt(outWidthEl.value)  || 240;
   const outH = parseInt(outHeightEl.value) || 240;
-  const combined = buildCombinedHeader(frames, outW, outH, progmemEl.checked);
 
-  const zip = new JSZip();
-  zip.file("gif_frames.h", combined);
-
-  const blob = await zip.generateAsync({
-    type: "blob", compression: "DEFLATE", compressionOptions: { level: 6 }
+  // Re-index selected frames so arrays start at frame_000
+  const selected = frames.slice(s, e + 1).map((f, i) => {
+    const newName = `frame_${pad(i)}`;
+    return {
+      name:    `${newName}.h`,
+      content: f.content.replace(/frame_\d{3}/g, newName)
+    };
   });
-  triggerDownload(blob, "gif_frames.zip");
 
-  dlZipBtn.disabled    = false;
-  dlZipBtn.textContent = "\u2b07 Download gif_frames.zip";
-});
-
-dlIndexBtn.addEventListener("click", () => {
-  if (!frames.length) return;
-  const outW = parseInt(outWidthEl.value)  || 240;
-  const outH = parseInt(outHeightEl.value) || 240;
+  const combined = buildCombinedHeader(selected, outW, outH, progmemEl.checked);
   triggerDownload(
-    new Blob([buildCombinedHeader(frames, outW, outH, progmemEl.checked)], { type: "text/plain" }),
+    new Blob([combined], { type: "text/plain" }),
     "gif_frames.h"
   );
-});
-
-dlSingleBtn.addEventListener("click", () => {
-  const idx = parseInt(singleFrameNum.value);
-  if (isNaN(idx) || idx < 0 || idx >= frames.length) {
-    alert(`Frame index must be 0\u2013${frames.length - 1}.`); return;
-  }
-  const { name, content } = frames[idx];
-  triggerDownload(new Blob([content], { type: "text/plain" }), name);
 });
 
 function triggerDownload(blob, filename) {
